@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Foundry — Academy for Builders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0D0C0A;
+      --bg-2:        #131210;
+      --bg-3:        #1A1916;
+      --bg-raised:   #1F1E1B;
+      --gold:        #C9A84C;
+      --gold-dim:    #8A6F32;
+      --gold-glow:   rgba(201,168,76,0.12);
+      --cream:       #EDE8DC;
+      --cream-dim:   #A89E8A;
+      --white:       #F7F3EB;
+      --rule:        #2A2825;
+      --rule-bright: #3D3A34;
+      --red:         #8B3A2A;
+
+      --display: 'Playfair Display', Georgia, serif;
+      --body:    'Inter', system-ui, sans-serif;
+      --mono:    'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ══ SCROLLBAR ══ */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+    /* ══ NAV ══ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(13,12,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 48px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-mark {
+      font-family: var(--display);
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); cursor: pointer; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--cream-dim); text-decoration: none;
+      transition: color 0.2s; cursor: pointer;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--cream); }
+    .nav-cta {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--bg); background: var(--gold);
+      padding: 10px 24px; border: none;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--cream); }
+
+    /* ══ HERO ══ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: 64px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -52%);
+      font-family: var(--display);
+      font-size: clamp(140px, 24vw, 340px);
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(201,168,76,0.06);
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 56px 72px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 28px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block;
+      width: 32px; height: 1px; background: var(--gold-dim);
+    }
+
+    .hero-wordmark {
+      font-family: var(--display);
+      font-size: clamp(80px, 13vw, 176px);
+      font-weight: 900; line-height: 0.88;
+      letter-spacing: -0.03em;
+      color: var(--cream); margin-bottom: 40px;
+    }
+
+    .hero-tagline {
+      font-family: var(--display);
+      font-size: clamp(22px, 3.2vw, 44px);
+      font-weight: 400; font-style: italic;
+      line-height: 1.25; color: var(--cream-dim);
+      max-width: 640px; margin-bottom: 48px;
+    }
+    .hero-tagline em { font-style: normal; color: var(--gold); }
+
+    .hero-sub {
+      font-size: 15px; color: var(--cream-dim);
+      max-width: 500px; line-height: 1.75; margin-bottom: 52px;
+    }
+
+    .hero-actions { display: flex; align-items: center; gap: 32px; }
+
+    .btn-gold {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--bg); background: var(--gold);
+      padding: 18px 44px; border: none;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-gold:hover { background: var(--cream); }
+
+    .btn-ghost {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--cream-dim); background: none; border: none;
+      cursor: pointer; display: flex; align-items: center;
+      gap: 10px; transition: all 0.2s;
+    }
+    .btn-ghost:hover { color: var(--cream); gap: 16px; }
+    .btn-ghost::after { content: '→'; }
+
+    .hero-scroll-bar {
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-dim), var(--rule) 60%);
+      position: relative;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--rule);
+    }
+    .hero-stat {
+      padding: 28px 40px;
+      border-right: 1px solid var(--rule);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat-val {
+      font-family: var(--display);
+      font-size: 32px; font-weight: 700;
+      color: var(--gold); line-height: 1; margin-bottom: 6px;
+    }
+    .hero-stat-lbl {
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--cream-dim);
+    }
+
+    /* ══ CINEMATIC DIVIDER ══ */
+    .cin-divider {
+      display: flex; align-items: center; gap: 24px;
+      padding: 0 56px; margin: 80px 0;
+      opacity: 0.5;
+    }
+    .cin-divider::before, .cin-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--rule-bright);
+    }
+    .cin-divider span {
+      font-family: var(--mono);
+      font-size: 9px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--gold-dim);
+    }
+
+    /* ══ SECTION LABEL ══ */
+    .sect-label {
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 0.24em;
+      text-transform: uppercase; color: var(--gold);
+    }
+
+    /* ══ MANIFESTO ══ */
+    .manifesto {
+      padding: 100px 56px;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 5fr 6fr;
+      gap: 80px;
+    }
+    .manifesto-headline {
+      font-family: var(--display);
+      font-size: clamp(32px, 4vw, 58px);
+      font-weight: 700; line-height: 1.1;
+      color: var(--cream); margin: 20px 0 32px;
+    }
+    .manifesto-body {
+      font-size: 16px; color: var(--cream-dim);
+      line-height: 1.85; max-width: 480px;
+    }
+    .manifesto-body p + p { margin-top: 18px; }
+    .manifesto-pull {
+      font-family: var(--display);
+      font-size: 22px; font-style: italic;
+      color: var(--gold); line-height: 1.5;
+      margin-top: 40px; padding-top: 32px;
+      border-top: 1px solid var(--rule-bright);
+    }
+
+    .manifesto-right { padding-top: 40px; }
+    .doctrine-item {
+      padding: 28px 0;
+      border-bottom: 1px solid var(--rule);
+      display: grid; grid-template-columns: 36px 1fr; gap: 20px;
+    }
+    .doctrine-item:first-child { border-top: 1px solid var(--rule); }
+    .doctrine-num {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; color: var(--gold);
+      padding-top: 4px;
+    }
+    .doctrine-title {
+      font-family: var(--display);
+      font-size: 17px; font-weight: 600;
+      color: var(--cream); margin-bottom: 8px;
+    }
+    .doctrine-body { font-size: 13px; color: var(--cream-dim); line-height: 1.65; }
+
+    /* ══ FIELD MANUALS ══ */
+    .manuals-section {
+      padding: 100px 56px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .manuals-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; margin-bottom: 56px;
+    }
+    .manuals-headline {
+      font-family: var(--display);
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 700; color: var(--cream);
+      margin-top: 16px; line-height: 1.15;
+    }
+    .manuals-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      border: 1px solid var(--rule);
+    }
+    .manual-card {
+      border-right: 1px solid var(--rule);
+      padding: 36px 24px;
+      position: relative;
+      transition: background 0.25s;
+    }
+    .manual-card:last-child { border-right: none; }
+    .manual-card.available { cursor: pointer; }
+    .manual-card.available:hover { background: var(--gold-glow); }
+    .manual-card.available:hover .mc-name { color: var(--gold); }
+    .manual-card.locked { opacity: 0.35; }
+
+    .mc-num {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.2em; color: var(--gold-dim);
+      margin-bottom: 28px;
+    }
+    .mc-roman {
+      font-family: var(--display);
+      font-size: 36px; font-weight: 900;
+      color: var(--rule-bright); margin-bottom: 16px;
+      line-height: 1;
+    }
+    .mc-name {
+      font-family: var(--display);
+      font-size: 18px; font-weight: 700;
+      color: var(--cream); margin-bottom: 8px;
+      transition: color 0.25s; line-height: 1.1;
+    }
+    .mc-sub { font-size: 11px; color: var(--cream-dim); margin-bottom: 24px; line-height: 1.4; }
+    .mc-rule { width: 20px; height: 1px; background: var(--gold-dim); margin-bottom: 16px; }
+    .mc-status {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--cream-dim);
+    }
+    .mc-lock { position: absolute; top: 16px; right: 16px; font-size: 12px; opacity: 0.3; }
+
+    /* ══ ORIENTATION TEASER ══ */
+    .o-teaser {
+      padding: 100px 56px;
+      background: var(--bg-2);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: start;
+    }
+    .o-teaser-headline {
+      font-family: var(--display);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 900; line-height: 1;
+      color: var(--cream); margin: 20px 0 28px;
+    }
+    .o-teaser-body { font-size: 15px; color: var(--cream-dim); line-height: 1.8; margin-bottom: 40px; }
+    .o-stages { list-style: none; border-top: 1px solid var(--rule); margin-top: 32px; }
+    .o-stage-row {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 20px 0; border-bottom: 1px solid var(--rule);
+      transition: all 0.2s; cursor: default;
+    }
+    .o-stage-row:hover { padding-left: 8px; }
+    .o-stage-row:hover .o-stage-n { color: var(--gold); }
+    .o-stage-n {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; color: var(--gold-dim);
+      min-width: 28px; padding-top: 2px;
+      transition: color 0.2s;
+    }
+    .o-stage-nm { font-size: 14px; font-weight: 500; color: var(--cream); }
+    .o-stage-ds { font-size: 12px; color: var(--cream-dim); margin-top: 3px; }
+
+    /* ══ JOURNAL ══ */
+    .journal-section { padding: 100px 56px; border-bottom: 1px solid var(--rule); }
+    .journal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
+    .journal-headline {
+      font-family: var(--display);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700; color: var(--cream); margin-top: 12px;
+    }
+    .journal-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--rule);
+      border-left: 1px solid var(--rule);
+    }
+    .j-card {
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 40px; cursor: pointer;
+      transition: background 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .j-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--gold);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .j-card:hover::before { transform: scaleX(1); }
+    .j-card:hover { background: var(--bg-raised); }
+    .j-log {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 16px;
+    }
+    .j-title {
+      font-family: var(--display);
+      font-size: 21px; font-weight: 700;
+      color: var(--cream); line-height: 1.2; margin-bottom: 14px;
+    }
+    .j-excerpt { font-size: 13px; color: var(--cream-dim); line-height: 1.75; margin-bottom: 32px; }
+    .j-meta {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; color: var(--rule-bright);
+    }
+
+    /* ══ FOOTER ══ */
+    footer {
+      padding: 72px 56px 0;
+      border-top: 1px solid var(--rule);
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px;
+    }
+    .footer-mark {
+      font-family: var(--display); font-size: 20px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 14px;
+    }
+    .footer-tagline { font-size: 13px; color: var(--cream-dim); line-height: 1.7; }
+    .footer-col-title {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold-dim); margin-bottom: 18px;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a {
+      font-size: 13px; color: var(--cream-dim);
+      text-decoration: none; cursor: pointer; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      padding: 24px 56px; margin-top: 56px;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--cream-dim); letter-spacing: 0.08em;
+    }
+
+    /* ══════════════════════════════
+       ORIENTATION
+    ══════════════════════════════ */
+    .o-page { min-height: 100vh; background: var(--bg); padding-top: 64px; }
+
+    .o-prog-bar {
+      height: 2px; background: var(--rule);
+      position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+    }
+    .o-prog-fill {
+      height: 100%; background: var(--gold);
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .o-wrap {
+      min-height: calc(100vh - 66px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 80px 48px; max-width: 720px; margin: 0 auto;
+    }
+
+    .o-lbl {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 28px; text-align: center;
+    }
+    .o-title {
+      font-family: var(--display);
+      font-size: clamp(38px, 6vw, 68px);
+      font-weight: 900; line-height: 1;
+      text-align: center; color: var(--cream);
+      margin-bottom: 28px;
+    }
+    .o-body {
+      font-size: 17px; color: var(--cream-dim);
+      line-height: 1.8; text-align: center;
+      margin-bottom: 48px; max-width: 540px;
+    }
+    .o-ta {
+      width: 100%;
+      background: var(--bg-raised);
+      border: 1px solid var(--rule-bright);
+      color: var(--cream);
+      font-family: var(--body); font-size: 15px;
+      line-height: 1.7; padding: 24px;
+      resize: vertical; min-height: 160px;
+      margin-bottom: 28px; outline: none;
+      transition: border-color 0.2s;
+      border-radius: 0;
+    }
+    .o-ta:focus { border-color: var(--gold); }
+    .o-ta::placeholder { color: var(--rule-bright); }
+    .o-btn {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--bg); background: var(--gold);
+      padding: 18px 52px; border: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .o-btn:hover { background: var(--cream); }
+    .o-btn:disabled { opacity: 0.35; cursor: not-allowed; background: var(--gold); }
+    .o-skip-btn {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--rule-bright); background: none; border: none;
+      cursor: pointer; margin-top: 16px; transition: color 0.2s;
+    }
+    .o-skip-btn:hover { color: var(--cream-dim); }
+
+    .pillars-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 10px; width: 100%; margin-bottom: 28px;
+    }
+    .p-btn {
+      border: 1px solid var(--rule-bright); background: none;
+      color: var(--cream-dim); font-family: var(--body);
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.04em; padding: 20px 12px;
+      text-align: center; cursor: pointer; transition: all 0.2s;
+    }
+    .p-btn:hover { border-color: var(--gold-dim); color: var(--cream); }
+    .p-btn.sel { border-color: var(--gold); background: var(--gold-glow); color: var(--gold); font-weight: 600; }
+
+    .oath-block {
+      border-left: 2px solid var(--gold);
+      padding: 32px 40px; margin: 32px 0;
+      background: rgba(201,168,76,0.04);
+      text-align: left; width: 100%;
+    }
+    .oath-line {
+      font-family: var(--display); font-size: 17px;
+      font-style: italic; color: var(--cream); line-height: 2.1;
+    }
+    .o-input {
+      width: 100%;
+      background: var(--bg-raised); border: 1px solid var(--rule-bright);
+      color: var(--cream); font-family: var(--body); font-size: 14px;
+      padding: 16px 24px; outline: none; margin-bottom: 24px;
+      transition: border-color 0.2s;
+    }
+    .o-input:focus { border-color: var(--gold); }
+    .o-input::placeholder { color: var(--rule-bright); }
+
+    /* Admission */
+    .admission-wrap {
+      text-align: center;
+      animation: fadeUp 0.8s ease both;
+    }
+    .admission-glyph {
+      font-size: 72px; color: var(--gold); margin-bottom: 32px;
+      line-height: 1; display: block;
+    }
+    .admission-hl {
+      font-family: var(--display);
+      font-size: clamp(36px,5vw,58px); font-weight: 900;
+      color: var(--cream); margin-bottom: 20px;
+    }
+    .admission-body {
+      font-size: 16px; color: var(--cream-dim);
+      line-height: 1.85; max-width: 460px;
+      margin: 0 auto 48px;
+    }
+    .admission-date {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.18em; color: var(--gold-dim);
+      margin-top: 20px; text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════
+       ACADEMY
+    ══════════════════════════════ */
+    .ac-page { padding-top: 64px; }
+    .ac-hero {
+      padding: 72px 56px 56px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg-2);
+    }
+    .ac-greeting {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .ac-headline {
+      font-family: var(--display);
+      font-size: 52px; font-weight: 900;
+      color: var(--cream); margin-bottom: 8px;
+    }
+    .ac-sub { font-size: 15px; color: var(--cream-dim); }
+
+    .dashboard {
+      display: grid; grid-template-columns: 2fr 1fr;
+    }
+    .db-main { padding: 48px 56px; border-right: 1px solid var(--rule); }
+    .db-aside { padding: 48px 40px; }
+    .db-lbl {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+    }
+
+    .mission-card {
+      border: 1px solid var(--rule-bright);
+      padding: 36px; margin-bottom: 28px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .mission-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--gold); transform: scaleX(0);
+      transform-origin: left; transition: transform 0.3s;
+    }
+    .mission-card:hover::before { transform: scaleX(1); }
+    .mission-card:hover { border-color: var(--gold-dim); background: var(--bg-raised); }
+    .mc-eyebrow {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.16em; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .mc-title {
+      font-family: var(--display);
+      font-size: 26px; font-weight: 700;
+      color: var(--cream); margin-bottom: 10px;
+    }
+    .mc-desc { font-size: 13px; color: var(--cream-dim); margin-bottom: 28px; line-height: 1.6; }
+    .prog-track { height: 2px; background: var(--rule-bright); margin-bottom: 8px; }
+    .prog-fill { height: 100%; background: var(--gold); transition: width 0.4s; }
+    .prog-lbl {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.08em; color: var(--cream-dim);
+      display: flex; justify-content: space-between;
+    }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--rule); margin-bottom: 28px;
+    }
+    .stat-cell {
+      padding: 24px 28px;
+      border-right: 1px solid var(--rule);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val {
+      font-family: var(--display);
+      font-size: 38px; font-weight: 700;
+      color: var(--gold); line-height: 1; margin-bottom: 6px;
+    }
+    .stat-lbl {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--cream-dim);
+    }
+
+    .aside-widget { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--rule); }
+    .aside-widget:last-child { border-bottom: none; }
+    .review-num {
+      font-family: var(--display);
+      font-size: 52px; font-weight: 700;
+      color: var(--cream); line-height: 1; margin: 10px 0 6px;
+    }
+    .review-lbl { font-size: 12px; color: var(--cream-dim); }
+    .streak-row { display: flex; gap: 6px; margin: 14px 0; }
+    .s-dot {
+      width: 28px; height: 28px;
+      border: 1px solid var(--rule-bright);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 9px; color: var(--cream-dim);
+      transition: all 0.2s;
+    }
+    .s-dot.on { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 600; }
+    .northstar-text {
+      font-family: var(--display);
+      font-size: 15px; font-style: italic;
+      color: var(--cream); line-height: 1.5; margin-top: 10px;
+    }
+    .pillar-tag {
+      display: inline-block;
+      background: var(--gold-glow);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold); font-family: var(--mono);
+      font-size: 10px; letter-spacing: 0.12em;
+      padding: 6px 14px; margin: 4px 4px 0 0;
+      text-transform: uppercase;
+    }
+
+    .manuals-list-sec { padding: 56px; }
+    .manual-row {
+      display: grid;
+      grid-template-columns: 72px 180px 1fr 160px 130px;
+      align-items: center; gap: 24px;
+      padding: 22px 0; border-bottom: 1px solid var(--rule);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .manual-row:hover { padding-left: 12px; }
+    .manual-row:hover .mr-num { color: var(--gold); }
+    .manual-row:hover .mr-title { color: var(--gold); }
+    .manual-row.lk { opacity: 0.35; cursor: default; pointer-events: none; }
+    .mr-num {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.14em; color: var(--gold-dim);
+      transition: color 0.15s;
+    }
+    .mr-title {
+      font-family: var(--display);
+      font-size: 20px; font-weight: 700;
+      color: var(--cream); transition: color 0.15s;
+    }
+    .mr-desc { font-size: 13px; color: var(--cream-dim); line-height: 1.5; }
+    .mr-status {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cream-dim); text-align: right;
+    }
+    .mr-status.active { color: var(--gold); }
+
+    /* ══════════════════════════════
+       MISSION PAGE
+    ══════════════════════════════ */
+    .miss-page { padding-top: 64px; }
+    .miss-hero {
+      padding: 80px 56px 64px;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--rule);
+    }
+    .miss-eyebrow {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .miss-eyebrow span:nth-child(2) { color: var(--rule-bright); }
+    .miss-title {
+      font-family: var(--display);
+      font-size: clamp(40px, 6vw, 76px);
+      font-weight: 900; line-height: 0.95;
+      color: var(--cream); margin-bottom: 24px;
+    }
+    .miss-obj {
+      font-size: 17px; color: var(--cream-dim);
+      max-width: 580px; line-height: 1.75;
+    }
+
+    .miss-body { display: grid; grid-template-columns: 1fr 280px; }
+    .miss-content { padding: 64px 64px 80px 56px; border-right: 1px solid var(--rule); }
+    .miss-sidebar {
+      padding: 48px 32px;
+      background: var(--bg-2);
+      position: sticky; top: 64px; height: fit-content;
+    }
+
+    .miss-sec { margin-bottom: 52px; }
+    .miss-sec-lbl {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--rule);
+    }
+    .miss-sec-text { font-size: 15px; color: var(--cream-dim); line-height: 1.85; }
+    .miss-sec-text p + p { margin-top: 16px; }
+
+    .model-card {
+      border: 1px solid var(--rule); padding: 24px;
+      margin-bottom: 12px; transition: border-color 0.2s;
+    }
+    .model-card:hover { border-color: var(--gold-dim); }
+    .model-nm {
+      font-family: var(--display);
+      font-size: 16px; font-weight: 600;
+      color: var(--cream); margin-bottom: 8px;
+    }
+    .model-ds { font-size: 13px; color: var(--cream-dim); line-height: 1.65; }
+
+    .ex-item {
+      display: flex; gap: 16px;
+      padding: 18px 0; border-bottom: 1px solid var(--rule);
+    }
+    .ex-n {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--gold); min-width: 22px; padding-top: 2px;
+    }
+    .ex-t { font-size: 14px; color: var(--cream-dim); line-height: 1.65; }
+
+    .check-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0; border-bottom: 1px solid var(--rule);
+    }
+    .chk {
+      width: 18px; height: 18px;
+      border: 1px solid var(--rule-bright); flex-shrink: 0;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 10px; color: var(--gold);
+      transition: all 0.15s; margin-top: 1px;
+    }
+    .chk.done { background: var(--gold-glow); border-color: var(--gold); }
+    .chk-t { font-size: 13px; color: var(--cream-dim); line-height: 1.5; }
+    .chk-t.done { color: var(--cream-dim); text-decoration: line-through; opacity: 0.5; }
+
+    .coaches-note {
+      background: var(--bg-raised);
+      border-left: 2px solid var(--gold);
+      padding: 20px 24px;
+      font-size: 14px; color: var(--cream-dim);
+      line-height: 1.75; font-style: italic;
+    }
+
+    .sb-sec { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--rule); }
+    .sb-sec:last-child { border-bottom: none; }
+    .sb-lbl {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 10px;
+    }
+    .sb-val {
+      font-family: var(--display);
+      font-size: 20px; font-weight: 700; color: var(--cream);
+    }
+    .std-badge {
+      display: inline-block;
+      background: var(--gold-glow);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold); font-family: var(--mono);
+      font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 7px 14px;
+      margin-bottom: 10px;
+    }
+    .complete-btn {
+      width: 100%; background: var(--gold);
+      color: var(--bg); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 20px; border: none; cursor: pointer;
+      margin-top: 16px; transition: background 0.2s;
+    }
+    .complete-btn:hover { background: var(--cream); }
+
+    /* ══ JOURNAL PAGE ══ */
+    .jpage { padding-top: 64px; }
+    .jpage-hero {
+      padding: 80px 56px 56px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .jpage-hl {
+      font-family: var(--display);
+      font-size: clamp(60px, 10vw, 120px);
+      font-weight: 900; line-height: 0.88;
+      color: var(--cream); margin-top: 16px;
+      letter-spacing: -0.03em;
+    }
+    .jpage-hl em { font-style: normal; color: var(--gold); }
+    .journal-full { padding: 0 56px 80px; }
+    .j-full-card {
+      border-bottom: 1px solid var(--rule);
+      padding: 52px 0; display: grid;
+      grid-template-columns: 200px 1fr 200px;
+      gap: 40px; align-items: start;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .j-full-card:hover { padding-left: 16px; }
+    .j-full-card:hover .j-full-title { color: var(--gold); }
+    .j-full-log {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+      padding-top: 6px;
+    }
+    .j-full-title {
+      font-family: var(--display);
+      font-size: 28px; font-weight: 700;
+      color: var(--cream); line-height: 1.15;
+      margin-bottom: 14px; transition: color 0.2s;
+    }
+    .j-full-ex { font-size: 14px; color: var(--cream-dim); line-height: 1.75; }
+    .j-full-meta {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; color: var(--cream-dim);
+      text-align: right; padding-top: 6px; line-height: 1.8;
+    }
+
+    /* ══ JOURNAL WRITE / READ PAGES ══ */
+    .write-page { padding-top: 64px; min-height: 100vh; }
+
+    .write-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 56px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg-2);
+      position: sticky; top: 64px; z-index: 50;
+    }
+    .write-header-left { display: flex; align-items: center; gap: 20px; }
+    .write-back {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--cream-dim); background: none; border: none;
+      cursor: pointer; transition: color 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .write-back:hover { color: var(--gold); }
+    .write-back::before { content: '←'; }
+    .write-status {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--rule-bright);
+    }
+    .write-status.saved { color: var(--gold-dim); }
+    .write-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-draft {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--cream-dim);
+      background: none; border: 1px solid var(--rule-bright);
+      padding: 10px 20px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-draft:hover { border-color: var(--gold-dim); color: var(--cream); }
+    .btn-publish {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--bg);
+      background: var(--gold); border: none;
+      padding: 10px 24px; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-publish:hover { background: var(--cream); }
+
+    .write-body { max-width: 760px; margin: 0 auto; padding: 64px 48px 120px; }
+
+    .write-log-num {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 32px;
+    }
+
+    .write-title-input {
+      width: 100%; background: none; border: none; outline: none;
+      font-family: var(--display);
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 700; color: var(--cream);
+      line-height: 1.1; margin-bottom: 24px;
+      caret-color: var(--gold);
+    }
+    .write-title-input::placeholder { color: var(--rule-bright); }
+
+    .write-meta-row {
+      display: flex; gap: 16px; align-items: center;
+      padding: 16px 0; border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule); margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .write-tag-input {
+      background: none; border: none; outline: none;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.12em; color: var(--cream-dim);
+      caret-color: var(--gold); min-width: 160px;
+    }
+    .write-tag-input::placeholder { color: var(--rule-bright); }
+    .write-tag-pill {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); background: var(--gold-glow);
+      border: 1px solid var(--gold-dim);
+      padding: 4px 12px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .write-tag-pill:hover { background: var(--rule); }
+    .write-meta-sep {
+      width: 1px; height: 16px; background: var(--rule-bright); flex-shrink: 0;
+    }
+    .write-date-lbl {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; color: var(--rule-bright);
+    }
+
+    /* Toolbar */
+    .write-toolbar {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+      flex-wrap: wrap;
+    }
+    .tb-btn {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--cream-dim); background: none;
+      border: none; padding: 6px 12px; cursor: pointer;
+      transition: all 0.15s; letter-spacing: 0.06em;
+    }
+    .tb-btn:hover { color: var(--gold); background: var(--bg-raised); }
+    .tb-sep { width: 1px; background: var(--rule); margin: 4px 4px; align-self: stretch; }
+
+    .write-content-input {
+      width: 100%; background: none; border: none; outline: none;
+      font-family: var(--body); font-size: 17px;
+      color: var(--cream-dim); line-height: 1.9;
+      min-height: 480px; resize: none;
+      caret-color: var(--gold);
+    }
+    .write-content-input::placeholder { color: var(--rule-bright); }
+    .write-word-count {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; color: var(--rule-bright);
+      text-align: right; margin-top: 24px;
+      padding-top: 16px; border-top: 1px solid var(--rule);
+    }
+
+    /* Single entry read view */
+    .read-page { padding-top: 64px; }
+    .read-hero {
+      padding: 80px 56px 56px;
+      border-bottom: 1px solid var(--rule);
+      max-width: 900px;
+    }
+    .read-log {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .read-title {
+      font-family: var(--display);
+      font-size: clamp(36px, 5.5vw, 68px);
+      font-weight: 900; line-height: 1;
+      color: var(--cream); margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+    .read-meta {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.12em; color: var(--cream-dim);
+      display: flex; gap: 24px; flex-wrap: wrap;
+    }
+    .read-body-wrap {
+      max-width: 680px; margin: 0 auto;
+      padding: 64px 56px 100px;
+    }
+    .read-body {
+      font-size: 18px; color: var(--cream-dim);
+      line-height: 1.9; white-space: pre-wrap;
+    }
+    .read-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--rule); }
+    .read-tag {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--gold-dim);
+      padding: 5px 12px;
+    }
+    .read-nav {
+      padding: 40px 56px; border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* Publish modal */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(13,12,10,0.92);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+      animation: fadeUp 0.3s ease both;
+    }
+    .modal {
+      background: var(--bg-2);
+      border: 1px solid var(--rule-bright);
+      padding: 56px; max-width: 520px; width: 90%;
+      text-align: center;
+    }
+    .modal-glyph { font-size: 48px; color: var(--gold); margin-bottom: 24px; }
+    .modal-title {
+      font-family: var(--display);
+      font-size: 32px; font-weight: 700;
+      color: var(--cream); margin-bottom: 16px;
+    }
+    .modal-body { font-size: 15px; color: var(--cream-dim); line-height: 1.75; margin-bottom: 36px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* ══ ABOUT PAGE ══ */
+    .about-page { padding-top: 64px; }
+    .about-hero {
+      padding: 100px 56px;
+      max-width: 900px;
+    }
+    .about-hl {
+      font-family: var(--display);
+      font-size: clamp(52px, 7vw, 88px);
+      font-weight: 900; line-height: 0.92;
+      color: var(--cream); margin-top: 16px;
+      margin-bottom: 52px; letter-spacing: -0.02em;
+    }
+    .about-pull {
+      font-family: var(--display);
+      font-size: 24px; font-style: italic;
+      color: var(--gold); line-height: 1.5;
+      margin-bottom: 40px; padding-bottom: 40px;
+      border-bottom: 1px solid var(--rule);
+      max-width: 680px;
+    }
+    .about-body {
+      font-size: 17px; color: var(--cream-dim);
+      line-height: 1.9; max-width: 640px;
+    }
+    .about-body p + p { margin-top: 22px; }
+
+    /* ══ ANIMATIONS ══ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fu { opacity: 0; animation: fadeUp 0.7s ease forwards; }
+    .fu-1 { animation-delay: 0.08s; }
+    .fu-2 { animation-delay: 0.22s; }
+    .fu-3 { animation-delay: 0.38s; }
+    .fu-4 { animation-delay: 0.54s; }
+    .o-enter { animation: fadeUp 0.5s ease both; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fu, .o-enter { animation: none; opacity: 1; }
+    }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1024px) {
+      .manuals-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero-inner { padding: 0 24px 56px; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .manifesto { grid-template-columns: 1fr; padding: 72px 24px; }
+      .manuals-section { padding: 72px 24px; }
+      .manuals-grid { grid-template-columns: repeat(2, 1fr); }
+      .o-teaser { grid-template-columns: 1fr; padding: 72px 24px; }
+      .journal-section { padding: 72px 24px; }
+      .journal-grid { grid-template-columns: 1fr; }
+      footer { grid-template-columns: 1fr 1fr; padding: 56px 24px 0; }
+      .dashboard { grid-template-columns: 1fr; }
+      .miss-body { grid-template-columns: 1fr; }
+      .miss-content { padding: 48px 24px; }
+      .j-full-card { grid-template-columns: 1fr; gap: 16px; }
+      .j-full-meta { text-align: left; }
+      .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+      .manual-row { grid-template-columns: 60px 1fr; }
+      .manual-row .mr-desc, .manual-row .prog-track, .manual-row .mr-status { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <span class="nav-mark" onclick="go('home')">The Foundry</span>
+  <ul class="nav-links">
+    <li><a onclick="go('orientation')" id="nl-orientation">Orientation</a></li>
+    <li><a onclick="go('academy')" id="nl-academy">Academy</a></li>
+    <li><a onclick="go('journal')" id="nl-journal">Builder Journal</a></li>
+    <li><a onclick="go('about')" id="nl-about">About</a></li>
+    <li><a onclick="go('home')" id="nl-admissions">Admissions</a></li>
+  </ul>
+  <button class="nav-cta" onclick="go('orientation')">Begin Orientation</button>
+</nav>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+
+  <section class="hero">
+    <div class="hero-bg-text">FOUNDRY</div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow fu fu-1">Est. 2024 — Academy for Builders</div>
+      <div class="hero-wordmark fu fu-2">THE<br>FOUNDRY</div>
+      <div class="hero-tagline fu fu-3">
+        Build Yourself.<br>Then Build the <em>World.</em>
+      </div>
+      <p class="hero-sub fu fu-4">
+        The Foundry is a self-directed academy for ambitious people who want to become technical product founders — through engineering, product thinking, communication and business, structured as Missions.
+      </p>
+      <div class="hero-actions fu fu-4">
+        <button class="btn-gold" onclick="go('orientation')">Begin Orientation</button>
+        <button class="btn-ghost" onclick="go('academy')">Explore the Academy</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val">VI</div>
+        <div class="hero-stat-lbl">Field Manuals</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">60+</div>
+        <div class="hero-stat-lbl">Missions</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">90</div>
+        <div class="hero-stat-lbl">Day Lock-In</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">∞</div>
+        <div class="hero-stat-lbl">Compounding Returns</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="manifesto">
+    <div>
+      <div class="sect-label">The Builder's Doctrine</div>
+      <h2 class="manifesto-headline">We are not teaching code.<br>We are forming founders.</h2>
+      <div class="manifesto-body">
+        <p>Most education teaches information. The Foundry teaches identity. There is a gap between people who have ideas and people who can execute them.</p>
+        <p>Universities produce thinkers who cannot ship. Bootcamps produce coders who cannot think. No one is forging the founder from raw material.</p>
+        <p>That is what The Foundry does.</p>
+      </div>
+      <div class="manifesto-pull">
+        "You arrive as someone with potential.<br>You leave as someone with proof."
+      </div>
+    </div>
+    <div class="manifesto-right">
+      <div class="doctrine-item">
+        <div class="doctrine-num">I</div>
+        <div>
+          <div class="doctrine-title">Identity precedes skill.</div>
+          <div class="doctrine-body">We form the person before we form the practitioner. Orientation comes before everything else.</div>
+        </div>
+      </div>
+      <div class="doctrine-item">
+        <div class="doctrine-num">II</div>
+        <div>
+          <div class="doctrine-title">Standards are a form of love.</div>
+          <div class="doctrine-body">We do not lower the bar to make people feel included. High standards are not cruel. Soft standards are.</div>
+        </div>
+      </div>
+      <div class="doctrine-item">
+        <div class="doctrine-num">III</div>
+        <div>
+          <div class="doctrine-title">Shipping is the curriculum.</div>
+          <div class="doctrine-body">Theory without execution is expensive entertainment. Every Field Manual culminates in something real.</div>
+        </div>
+      </div>
+      <div class="doctrine-item">
+        <div class="doctrine-num">IV</div>
+        <div>
+          <div class="doctrine-title">Ownership is the point.</div>
+          <div class="doctrine-body">We are not training employees. We are training founders. Ownership is a mindset before it is a legal structure.</div>
+        </div>
+      </div>
+      <div class="doctrine-item">
+        <div class="doctrine-num">V</div>
+        <div>
+          <div class="doctrine-title">Long-term thinking compounds.</div>
+          <div class="doctrine-body">We build builders who will still be building in twenty years. Fundamentals over hacks. Always.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="manuals-section">
+    <div class="manuals-header">
+      <div>
+        <div class="sect-label">The Curriculum</div>
+        <h2 class="manuals-headline">Six Field Manuals.<br>One complete formation.</h2>
+      </div>
+      <button class="btn-ghost" onclick="go('academy')">View the Academy</button>
+    </div>
+    <div class="manuals-grid">
+      <div class="manual-card available" onclick="go('academy')">
+        <div class="mc-num">FIELD MANUAL</div>
+        <div class="mc-roman">I</div>
+        <div class="mc-name">LOCK IN</div>
+        <div class="mc-sub">90 Days to Become a Builder</div>
+        <div class="mc-rule"></div>
+        <div class="mc-status" style="color:var(--gold)">● Available</div>
+      </div>
+      <div class="manual-card locked">
+        <div class="mc-lock">⌐</div>
+        <div class="mc-num">FIELD MANUAL</div>
+        <div class="mc-roman">II</div>
+        <div class="mc-name">BUILD</div>
+        <div class="mc-sub">Ship Your First Product</div>
+        <div class="mc-rule"></div>
+        <div class="mc-status">Locked</div>
+      </div>
+      <div class="manual-card locked">
+        <div class="mc-lock">⌐</div>
+        <div class="mc-num">FIELD MANUAL</div>
+        <div class="mc-roman">III</div>
+        <div class="mc-name">SHIP</div>
+        <div class="mc-sub">Launch Into the World</div>
+        <div class="mc-rule"></div>
+        <div class="mc-status">Locked</div>
+      </div>
+      <div class="manual-card locked">
+        <div class="mc-lock">⌐</div>
+        <div class="mc-num">FIELD MANUAL</div>
+        <div class="mc-roman">IV</div>
+        <div class="mc-name">SELL</div>
+        <div class="mc-sub">Distribution & Revenue</div>
+        <div class="mc-rule"></div>
+        <div class="mc-status">Locked</div>
+      </div>
+      <div class="manual-card locked">
+        <div class="mc-lock">⌐</div>
+        <div class="mc-num">FIELD MANUAL</div>
+        <div class="mc-roman">V</div>
+        <div class="mc-name">SYSTEMS</div>
+        <div class="mc-sub">Build to Scale</div>
+        <div class="mc-rule"></div>
+        <div class="mc-status">Locked</div>
+      </div>
+      <div class="manual-card locked">
+        <div class="mc-lock">⌐</div>
+        <div class="mc-num">FIELD MANUAL</div>
+        <div class="mc-roman">VI</div>
+        <div class="mc-name">OWN</div>
+        <div class="mc-sub">The Founder's Chapter</div>
+        <div class="mc-rule"></div>
+        <div class="mc-status">Locked</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="o-teaser">
+    <div>
+      <div class="sect-label">Where It Begins</div>
+      <h2 class="o-teaser-headline">Orientation.<br>Free.<br>Unforgettable.</h2>
+      <p class="o-teaser-body">Before any Field Manual is unlocked, every Builder completes Orientation. This is not a tutorial. It is an identity exercise — a few honest hours that change how you see yourself.</p>
+      <button class="btn-gold" onclick="go('orientation')">Begin Orientation →</button>
+    </div>
+    <div>
+      <div class="sect-label" style="padding-bottom:16px;">The Nine Stages</div>
+      <ul class="o-stages">
+        <li class="o-stage-row"><span class="o-stage-n">00</span><div><div class="o-stage-nm">Welcome</div><div class="o-stage-ds">The moment you cross the threshold.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">01</span><div><div class="o-stage-nm">Why Are You Here?</div><div class="o-stage-ds">Your first act of honesty.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">02</span><div><div class="o-stage-nm">Your Story</div><div class="o-stage-ds">What brought you to this door.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">03</span><div><div class="o-stage-nm">Your North Star</div><div class="o-stage-ds">The singular objective.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">04</span><div><div class="o-stage-nm">Your Two Primary Pillars</div><div class="o-stage-ds">Where you will go deepest.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">05</span><div><div class="o-stage-nm">Your Asymmetric Advantage</div><div class="o-stage-ds">What you already have.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">06</span><div><div class="o-stage-nm">Your Standards</div><div class="o-stage-ds">What is non-negotiable.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">07</span><div><div class="o-stage-nm">The Builder's Oath</div><div class="o-stage-ds">The moment you become a Builder.</div></div></li>
+        <li class="o-stage-row"><span class="o-stage-n">08</span><div><div class="o-stage-nm">Admission</div><div class="o-stage-ds">The academy opens.</div></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="journal-section">
+    <div class="journal-header">
+      <div>
+        <div class="sect-label">Field Notes</div>
+        <h2 class="journal-headline">Builder Journal</h2>
+      </div>
+      <button class="btn-ghost" onclick="go('journal')">All Entries</button>
+    </div>
+    <div class="journal-grid">
+      <div class="j-card" onclick="readEntry('seed-001')">
+        <div class="j-log">Builder Log 001</div>
+        <div class="j-title">Why Identity Comes Before Code</div>
+        <div class="j-excerpt">The most common mistake ambitious people make is starting with tools before they have decided what they are building — and why they are the one to build it.</div>
+        <div class="j-meta">June 2024 · 8 min read</div>
+      </div>
+      <div class="j-card" onclick="readEntry('seed-014')">
+        <div class="j-log">Builder Log 014</div>
+        <div class="j-title">The 90-Day Lock In: What We Actually Mean</div>
+        <div class="j-excerpt">Lock In is not about working more hours. It is about eliminating the optionality that prevents any real commitment from forming.</div>
+        <div class="j-meta">August 2024 · 6 min read</div>
+      </div>
+      <div class="j-card" onclick="readEntry('seed-035')">
+        <div class="j-log">Builder Log 035</div>
+        <div class="j-title">Shipping Ugly: On Imperfection as Discipline</div>
+        <div class="j-excerpt">The Builder who waits for perfection is not a perfectionist — they are afraid. Shipping ugly takes more courage than waiting.</div>
+        <div class="j-meta">November 2024 · 5 min read</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="footer-mark">The Foundry</div>
+      <div class="footer-tagline">An academy for ambitious people becoming technical product founders. Build Yourself. Then Build the World.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Academy</div>
+      <ul class="footer-links">
+        <li><a onclick="go('orientation')">Orientation</a></li>
+        <li><a onclick="go('academy')">Field Manuals</a></li>
+        <li><a onclick="go('mission')">Missions</a></li>
+        <li><a onclick="go('academy')">Builder Dashboard</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Institution</div>
+      <ul class="footer-links">
+        <li><a onclick="go('about')">About</a></li>
+        <li><a>Philosophy</a></li>
+        <li><a onclick="go('journal')">Builder Journal</a></li>
+        <li><a>Admissions</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Standards</div>
+      <ul class="footer-links">
+        <li><a>Builder's Doctrine</a></li>
+        <li><a>Academic Standards</a></li>
+        <li><a onclick="go('orientation')">Builder's Oath</a></li>
+        <li><a>Alumni</a></li>
+      </ul>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <div class="footer-copy">© The Foundry — Est. 2024</div>
+    <div class="footer-copy">Build Yourself. Then Build the World.</div>
+  </div>
+
+</div>
+
+<!-- ══════════ ORIENTATION ══════════ -->
+<div id="page-orientation" class="page">
+  <div class="o-page">
+    <div class="o-prog-bar"><div class="o-prog-fill" id="o-prog" style="width:0%"></div></div>
+    <div id="o-content"></div>
+  </div>
+</div>
+
+<!-- ══════════ ACADEMY ══════════ -->
+<div id="page-academy" class="page">
+  <div class="ac-page">
+    <div class="ac-hero">
+      <div class="ac-greeting">Field Manual I — Lock In — Week 3</div>
+      <h1 class="ac-headline">Welcome back, Builder.</h1>
+      <p class="ac-sub">Your formation continues. The streak is alive. Stay the course.</p>
+    </div>
+    <div class="dashboard">
+      <div class="db-main">
+        <div class="db-lbl">Current Mission</div>
+        <div class="mission-card" onclick="go('mission')">
+          <div class="mc-eyebrow">Field Manual I — Mission 003</div>
+          <div class="mc-title">Your Personal Operating System</div>
+          <div class="mc-desc">Define the daily and weekly systems that will sustain your formation as a Builder for the next 90 days and beyond.</div>
+          <div class="prog-track"><div class="prog-fill" style="width:60%"></div></div>
+          <div class="prog-lbl"><span>Mission Progress</span><span>60%</span></div>
+        </div>
+
+        <div class="db-lbl">Builder Score</div>
+        <div class="stats-row">
+          <div class="stat-cell">
+            <div class="stat-val">847</div>
+            <div class="stat-lbl">Builder Score</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">12</div>
+            <div class="stat-lbl">Day Streak</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">3/10</div>
+            <div class="stat-lbl">Missions Done</div>
+          </div>
+        </div>
+
+        <div class="db-lbl">Weekly Review — Due Sunday</div>
+        <div class="mission-card" style="padding:28px 36px;">
+          <div class="mc-eyebrow">Week 3 of 12</div>
+          <div class="mc-title" style="font-size:20px;margin-bottom:8px;">Weekly Builder Review</div>
+          <div class="mc-desc">Reflect on the past seven days. What did you ship? What blocked you? What will you do differently?</div>
+        </div>
+      </div>
+
+      <div class="db-aside">
+        <div class="aside-widget">
+          <div class="db-lbl">Performance Review</div>
+          <div class="review-num">67</div>
+          <div class="review-lbl">days until Field Manual I Performance Review</div>
+        </div>
+        <div class="aside-widget">
+          <div class="db-lbl">Mission Streak</div>
+          <div class="streak-row">
+            <div class="s-dot on">M</div><div class="s-dot on">T</div>
+            <div class="s-dot on">W</div><div class="s-dot on">T</div>
+            <div class="s-dot on">F</div><div class="s-dot">S</div>
+            <div class="s-dot">S</div>
+          </div>
+          <div class="review-lbl">12-day streak. Don't break it.</div>
+        </div>
+        <div class="aside-widget">
+          <div class="db-lbl">Your North Star</div>
+          <div class="northstar-text">"Build a product used by a million people."</div>
+        </div>
+        <div class="aside-widget">
+          <div class="db-lbl">Your Pillars</div>
+          <div style="margin-top:8px;">
+            <span class="pillar-tag">Engineering</span>
+            <span class="pillar-tag">Product</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="manuals-list-sec">
+      <div class="sect-label">Curriculum</div>
+      <div style="margin-top:24px;">
+        <div class="manual-row" onclick="go('mission')">
+          <div class="mr-num">FM I</div>
+          <div class="mr-title">LOCK IN</div>
+          <div class="mr-desc">90 Days to Become a Builder — Foundation, Identity, Systems, First Technical Skills</div>
+          <div><div class="prog-track"><div class="prog-fill" style="width:30%"></div></div><div class="prog-lbl"><span>3/10</span><span>30%</span></div></div>
+          <div class="mr-status active">● In Progress</div>
+        </div>
+        <div class="manual-row lk">
+          <div class="mr-num">FM II</div><div class="mr-title">BUILD</div>
+          <div class="mr-desc">Ship Your First Product</div><div></div>
+          <div class="mr-status">Locked</div>
+        </div>
+        <div class="manual-row lk">
+          <div class="mr-num">FM III</div><div class="mr-title">SHIP</div>
+          <div class="mr-desc">Launch Into the World</div><div></div>
+          <div class="mr-status">Locked</div>
+        </div>
+        <div class="manual-row lk">
+          <div class="mr-num">FM IV</div><div class="mr-title">SELL</div>
+          <div class="mr-desc">Distribution & Revenue</div><div></div>
+          <div class="mr-status">Locked</div>
+        </div>
+        <div class="manual-row lk">
+          <div class="mr-num">FM V</div><div class="mr-title">SYSTEMS</div>
+          <div class="mr-desc">Build to Scale</div><div></div>
+          <div class="mr-status">Locked</div>
+        </div>
+        <div class="manual-row lk">
+          <div class="mr-num">FM VI</div><div class="mr-title">OWN</div>
+          <div class="mr-desc">The Founder's Chapter</div><div></div>
+          <div class="mr-status">Locked</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MISSION ══════════ -->
+<div id="page-mission" class="page">
+  <div class="miss-page">
+    <div class="miss-hero">
+      <div class="miss-eyebrow">
+        <span>Field Manual I</span><span>—</span><span>Mission 003</span>
+      </div>
+      <h1 class="miss-title">Your Personal<br>Operating System</h1>
+      <p class="miss-obj">Define the daily and weekly systems that will sustain your formation as a Builder — the architecture of discipline that makes everything else possible.</p>
+    </div>
+    <div class="miss-body">
+      <div class="miss-content">
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Objective</div>
+          <div class="miss-sec-text">
+            <p>By the end of this Mission, you will have designed your personal operating system — a set of non-negotiable daily and weekly rhythms that govern how you work, rest, reflect, and progress as a Builder.</p>
+            <p>This is not a productivity exercise. This is a design exercise. You are designing yourself.</p>
+          </div>
+        </div>
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Why This Matters</div>
+          <div class="miss-sec-text">
+            <p>Most people fail not because they lack ability. They fail because they have no system. Talent without architecture is a gift that gets wasted. The builders who compound are not more gifted — they are more structured.</p>
+            <p>Your operating system is the infrastructure on which everything else is built. A weak infrastructure cannot support a large product. The same is true for a life.</p>
+          </div>
+        </div>
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Mental Models</div>
+          <div class="model-card">
+            <div class="model-nm">The Minimum Viable Routine</div>
+            <div class="model-ds">What is the smallest set of daily actions that, if done consistently, would produce the builder you want to become? Start there. Complexity can be added. Missing the minimum cannot be tolerated.</div>
+          </div>
+          <div class="model-card">
+            <div class="model-nm">Energy Architecture</div>
+            <div class="model-ds">You have a finite amount of cognitive energy each day. Allocate your peak energy to your most important work, and your recovery periods to lower-stakes tasks. Most people do this backwards.</div>
+          </div>
+          <div class="model-card">
+            <div class="model-nm">Weekly Review as Navigation</div>
+            <div class="model-ds">A ship without a navigator drifts. Your weekly review is the moment each week where you re-orient. It takes 30 minutes. Missing it means drifting for another seven days.</div>
+          </div>
+        </div>
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Exercises</div>
+          <div class="ex-item"><div class="ex-n">01</div><div class="ex-t">Write down everything you did yesterday in 30-minute blocks. How much of it moved your mission forward? How much was noise?</div></div>
+          <div class="ex-item"><div class="ex-n">02</div><div class="ex-t">Identify your single highest-value hour of the day — where your mind is sharpest. What are you doing during that hour right now? What should you be doing instead?</div></div>
+          <div class="ex-item"><div class="ex-n">03</div><div class="ex-t">Design your Minimum Viable Routine. Three non-negotiable daily actions that, if done, make the day a success. Write them. Then ask: have you done all three today?</div></div>
+        </div>
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Assignment</div>
+          <div class="ex-item"><div class="ex-n">A</div><div class="ex-t">Your Minimum Viable Routine — three daily non-negotiables and your reasoning for each.</div></div>
+          <div class="ex-item"><div class="ex-n">B</div><div class="ex-t">Your weekly review template — the questions you will ask yourself every Sunday.</div></div>
+          <div class="ex-item"><div class="ex-n">C</div><div class="ex-t">Your energy architecture — when you will do deep work, shallow work, and recovery.</div></div>
+          <div class="ex-item"><div class="ex-n">D</div><div class="ex-t">One honest answer: the single habit that, if eliminated, would most accelerate your progress.</div></div>
+        </div>
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Submission Checklist</div>
+          <div class="check-row"><div class="chk" onclick="toggleCheck(this)"></div><div class="chk-t">Minimum Viable Routine written and clearly reasoned</div></div>
+          <div class="check-row"><div class="chk" onclick="toggleCheck(this)"></div><div class="chk-t">Weekly review template complete with at least five questions</div></div>
+          <div class="check-row"><div class="chk" onclick="toggleCheck(this)"></div><div class="chk-t">Energy architecture mapped across a typical day</div></div>
+          <div class="check-row"><div class="chk" onclick="toggleCheck(this)"></div><div class="chk-t">Honest self-assessment submitted — no generic answers</div></div>
+          <div class="check-row"><div class="chk" onclick="toggleCheck(this)"></div><div class="chk-t">Assignment reviewed against the Builder Standard</div></div>
+        </div>
+        <div class="miss-sec">
+          <div class="miss-sec-lbl">Coach's Notes</div>
+          <div class="coaches-note">"Most Builders submit a routine that looks good on paper. The ones who progress submit one that is actually true to how they currently work — and then start changing it. Don't design your ideal self. Design the version of yourself you can be tomorrow."</div>
+        </div>
+      </div>
+
+      <div class="miss-sidebar">
+        <div class="sb-sec">
+          <div class="sb-lbl">Builder Standard</div>
+          <div class="std-badge">Builder Grade</div>
+          <div style="font-size:13px;color:var(--cream-dim);line-height:1.6;margin-top:10px;">Specific, honest, and designed for the person you actually are — not the person you hope to be.</div>
+        </div>
+        <div class="sb-sec">
+          <div class="sb-lbl">Mission</div>
+          <div class="sb-val">003</div>
+          <div style="margin-top:16px;"><div class="sb-lbl">Estimated Time</div><div style="font-size:15px;color:var(--cream);">3–4 hours</div></div>
+          <div style="margin-top:12px;"><div class="sb-lbl">Format</div><div style="font-size:15px;color:var(--cream);">Written Document</div></div>
+        </div>
+        <div class="sb-sec">
+          <div class="sb-lbl">Your Progress</div>
+          <div class="prog-track" style="margin-bottom:8px;"><div class="prog-fill" style="width:60%"></div></div>
+          <div class="prog-lbl"><span>60% complete</span></div>
+        </div>
+        <div class="sb-sec">
+          <button onclick="go('academy')" style="background:none;border:1px solid var(--rule-bright);font-size:11px;padding:12px 16px;cursor:pointer;font-family:var(--body);color:var(--cream-dim);width:100%;text-align:left;transition:all 0.15s;letter-spacing:0.04em;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--cream)'" onmouseout="this.style.borderColor='var(--rule-bright)';this.style.color='var(--cream-dim)'">← Back to Academy</button>
+        </div>
+        <button class="complete-btn" onclick="alert('Mission submitted.\n\nCoach\'s review will follow within 48 hours.\nMission 004 unlocks upon approval.')">Complete Mission 003</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ JOURNAL ══════════ -->
+<div id="page-journal" class="page">
+  <div class="jpage">
+    <div class="jpage-hero" style="display:flex;justify-content:space-between;align-items:flex-end;">
+      <div>
+        <div class="sect-label">Field Notes from The Foundry</div>
+        <h1 class="jpage-hl">Builder<br><em>Journal</em></h1>
+      </div>
+      <button class="btn-gold" onclick="newEntry()" style="margin-bottom:8px;">+ New Entry</button>
+    </div>
+    <div class="journal-full" id="journal-entries-list">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ WRITE ══════════ -->
+<div id="page-write" class="page">
+  <div class="write-page">
+    <div class="write-header">
+      <div class="write-header-left">
+        <button class="write-back" onclick="go('journal')">Journal</button>
+        <span class="write-status" id="write-status">Unsaved</span>
+      </div>
+      <div class="write-actions">
+        <button class="btn-draft" onclick="saveDraft()">Save Draft</button>
+        <button class="btn-publish" onclick="showPublishModal()">Publish Entry →</button>
+      </div>
+    </div>
+    <div class="write-body">
+      <div class="write-log-num" id="write-log-num">Builder Log 000</div>
+      <textarea class="write-title-input" id="write-title" rows="2"
+        placeholder="Give this entry a title..."
+        oninput="autoResize(this); markUnsaved();"></textarea>
+      <div class="write-meta-row">
+        <span class="write-date-lbl" id="write-date"></span>
+        <div class="write-meta-sep"></div>
+        <div id="write-tags-display" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+        <input class="write-tag-input" id="write-tag-input"
+          placeholder="Add a tag, press Enter..."
+          onkeydown="handleTagInput(event)" />
+      </div>
+      <div class="write-toolbar">
+        <button class="tb-btn" onclick="insertMd('**','**')">B</button>
+        <button class="tb-btn" onclick="insertMd('*','*')" style="font-style:italic;">I</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" onclick="insertLine('## ')">H2</button>
+        <button class="tb-btn" onclick="insertLine('### ')">H3</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" onclick="insertLine('> ')">Quote</button>
+        <button class="tb-btn" onclick="insertLine('— ')">—</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" onclick="insertLine('• ')">List</button>
+      </div>
+      <textarea class="write-content-input" id="write-content"
+        placeholder="Write your entry here. This is your field note. Write like you mean it."
+        oninput="updateWordCount(); markUnsaved();"></textarea>
+      <div class="write-word-count" id="write-wc">0 words</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ READ ══════════ -->
+<div id="page-read" class="page">
+  <div class="read-page">
+    <div class="read-hero">
+      <div class="read-log" id="read-log"></div>
+      <h1 class="read-title" id="read-title"></h1>
+      <div class="read-meta" id="read-meta"></div>
+    </div>
+    <div class="read-body-wrap">
+      <div class="read-body" id="read-body"></div>
+      <div class="read-tags" id="read-tags"></div>
+    </div>
+    <div class="read-nav">
+      <button class="write-back" onclick="go('journal')">All Entries</button>
+      <button class="btn-draft" id="read-edit-btn" onclick="editEntry()">Edit Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<div id="page-about" class="page">
+  <div class="about-page">
+    <div class="about-hero">
+      <div class="sect-label">The Institution</div>
+      <h1 class="about-hl">About<br>The<br>Foundry</h1>
+      <div class="about-pull">"We are not selling information. We are selling transformation."</div>
+      <div class="about-body">
+        <p>The Foundry exists because the world needs more founders. Not more coders. Not more employees. Founders — people who take ideas from thought to reality without waiting for permission.</p>
+        <p>We built The Foundry because every existing institution was solving the wrong problem. Universities produce thinkers who cannot ship. Bootcamps produce coders who cannot think. Incubators take founders who already exist and give them rooms to network in.</p>
+        <p>No one was forging the founder from raw material.</p>
+        <p>That is what we do.</p>
+        <p>Our curriculum is structured around six Field Manuals and begins with Orientation — a free, required experience where every Builder stops thinking of themselves as "someone learning to code" and starts thinking of themselves as a Builder.</p>
+        <p>The credential is the work. The proof is what you ship.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════════
+  // STORAGE — in-memory (persists this session)
+  // ══════════════════════════════════════════
+  const SEED_ENTRIES = [
+    {
+      id: 'seed-001', logNum: 1, status: 'published',
+      title: 'Why Identity Comes Before Code',
+      content: `The most common mistake ambitious people make is starting with tools before they have decided what they are building — and why they are the one to build it.\n\nA hammer is useless without a blueprint. A blueprint is useless without a reason.\n\nThe Foundry exists because we believe the first question is not "what should I learn?" It is "who am I becoming?" When you answer that question honestly, the tools you need become obvious. The path becomes clear. The work becomes meaningful.\n\nMost coding education skips this question entirely. They assume that if you learn enough syntax, purpose will follow. It rarely does. What follows is usually a well-employed person wondering why they still feel like something is missing.\n\nIdentity is not a luxury. It is the foundation. Build on sand and everything you build will eventually sink.`,
+      tags: ['Identity', 'Philosophy'],
+      date: 'June 2024', dateRaw: new Date('2024-06-12').getTime(),
+    },
+    {
+      id: 'seed-014', logNum: 14, status: 'published',
+      title: 'The 90-Day Lock In: What We Actually Mean',
+      content: `Lock In is not about working more hours.\n\nIt is about eliminating the optionality that prevents any real commitment from forming. Commitment requires cost. When everything is possible, nothing is chosen.\n\nThe 90-day window is not a deadline. It is a container. Something you pour yourself into completely.\n\nMost people live in permanent optionality. They keep their options open not because they are strategic thinkers, but because they are afraid of the cost of choosing. Every open option is a small leak in the vessel you are trying to fill.\n\nLock In means closing the leaks. It means saying: for these 90 days, this is the thing. Not one of the things. The thing.\n\nThat decision — made once, kept daily — is where compounding begins.`,
+      tags: ['Discipline', 'Systems'],
+      date: 'August 2024', dateRaw: new Date('2024-08-05').getTime(),
+    },
+    {
+      id: 'seed-035', logNum: 35, status: 'published',
+      title: 'Shipping Ugly: On Imperfection as Discipline',
+      content: `The first version of everything is embarrassing.\n\nThe Builder who waits for perfection is not a perfectionist. They are afraid.\n\nShipping ugly takes more courage than waiting. The market does not reward beautiful unreleased products. It rewards ugly released ones that get better.\n\nPerfectionism is usually a story we tell ourselves to justify fear. The story sounds reasonable — "I just want it to be good before I share it" — but it is a delay mechanism dressed up as a standard.\n\nReal standards are not about waiting until something is perfect. They are about shipping, learning, and making the next version better. That is the only loop that actually produces excellence.\n\nShip the ugly thing. Improve it publicly. That is discipline.`,
+      tags: ['Shipping', 'Craft'],
+      date: 'November 2024', dateRaw: new Date('2024-11-18').getTime(),
+    },
+  ];
+
+  // In-memory store
+  let DB = {
+    entries: [...SEED_ENTRIES],
+    nextLogNum: 36,
+  };
+
+  function saveDB() {
+    // In-memory only — no localStorage (not supported in this environment)
+    // In production this would persist to a backend
+  }
+
+  function getPublished() {
+    return DB.entries
+      .filter(e => e.status === 'published')
+      .sort((a,b) => b.dateRaw - a.dateRaw);
+  }
+
+  function getAllEntries() {
+    return [...DB.entries].sort((a,b) => b.dateRaw - a.dateRaw);
+  }
+
+  // ══════════════════════════════════════════
+  // ROUTING
+  // ══════════════════════════════════════════
+  function go(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const nl = document.getElementById('nl-' + name);
+    if (nl) nl.classList.add('active');
+    if (name === 'orientation') initOrientation();
+    if (name === 'journal') renderJournal();
+  }
+
+  // ══════════════════════════════════════════
+  // JOURNAL — RENDER LIST
+  // ══════════════════════════════════════════
+  function renderJournal() {
+    const list = document.getElementById('journal-entries-list');
+    const entries = getAllEntries();
+    if (!entries.length) {
+      list.innerHTML = `<div style="padding:80px 0;text-align:center;">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--rule-bright);text-transform:uppercase;margin-bottom:16px;">No entries yet</div>
+        <div style="font-size:15px;color:var(--cream-dim);margin-bottom:32px;">Your journal is waiting.</div>
+        <button class="btn-gold" onclick="newEntry()">Write Your First Entry →</button>
+      </div>`; return;
+    }
+    list.innerHTML = entries.map(e => {
+      const wordCount = e.content.trim().split(/\s+/).length;
+      const readMin = Math.max(1, Math.round(wordCount / 200));
+      const preview = e.content.replace(/\n/g,' ').slice(0,180) + (e.content.length > 180 ? '…' : '');
+      const isDraft = e.status === 'draft';
+      return `<div class="j-full-card" onclick="readEntry('${e.id}')">
+        <div class="j-full-log" style="${isDraft ? 'color:var(--rule-bright)' : ''}">
+          ${isDraft ? 'Draft' : `Builder Log ${String(e.logNum).padStart(3,'0')}`}
+        </div>
+        <div>
+          <div class="j-full-title">${escHtml(e.title) || '<span style="color:var(--rule-bright);font-style:italic;">Untitled</span>'}</div>
+          <div class="j-full-ex">${escHtml(preview)}</div>
+        </div>
+        <div class="j-full-meta">
+          ${e.date}<br>${readMin} min read
+          ${e.tags.length ? '<br><br>' + e.tags.join(' · ') : ''}
+          ${isDraft ? '<br><br><span style="color:var(--gold-dim);">● Draft</span>' : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ══════════════════════════════════════════
+  // JOURNAL — NEW ENTRY
+  // ══════════════════════════════════════════
+  let editingId = null;
+  let currentTags = [];
+
+  function newEntry() {
+    editingId = null;
+    currentTags = [];
+    const logNum = DB.nextLogNum;
+    const now = new Date();
+
+    document.getElementById('write-log-num').textContent = `Builder Log ${String(logNum).padStart(3,'0')}`;
+    document.getElementById('write-title').value = '';
+    document.getElementById('write-content').value = '';
+    document.getElementById('write-tags-display').innerHTML = '';
+    document.getElementById('write-tag-input').value = '';
+    document.getElementById('write-date').textContent = now.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    document.getElementById('write-wc').textContent = '0 words';
+    document.getElementById('write-status').textContent = 'Unsaved';
+    document.getElementById('write-status').className = 'write-status';
+
+    go('write');
+  }
+
+  function editEntry() {
+    if (!editingId) return;
+    openWriteFor(editingId);
+  }
+
+  function openWriteFor(id) {
+    const e = DB.entries.find(e => e.id === id);
+    if (!e) return;
+    editingId = id;
+    currentTags = [...e.tags];
+
+    document.getElementById('write-log-num').textContent =
+      e.status === 'draft' ? 'Draft' : `Builder Log ${String(e.logNum).padStart(3,'0')}`;
+    document.getElementById('write-title').value = e.title;
+    document.getElementById('write-content').value = e.content;
+    document.getElementById('write-date').textContent = e.date;
+    document.getElementById('write-wc').textContent = wordCount(e.content) + ' words';
+    document.getElementById('write-status').textContent = 'Saved';
+    document.getElementById('write-status').className = 'write-status saved';
+    renderTagsDisplay();
+    go('write');
+  }
+
+  function renderTagsDisplay() {
+    document.getElementById('write-tags-display').innerHTML =
+      currentTags.map((t,i) => `<span class="write-tag-pill" onclick="removeTag(${i})">${escHtml(t)} ×</span>`).join('');
+  }
+
+  function removeTag(i) {
+    currentTags.splice(i,1);
+    renderTagsDisplay();
+    markUnsaved();
+  }
+
+  function handleTagInput(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const val = e.target.value.trim().replace(/,$/,'');
+      if (val && !currentTags.includes(val) && currentTags.length < 5) {
+        currentTags.push(val);
+        renderTagsDisplay();
+        e.target.value = '';
+        markUnsaved();
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════
+  // SAVE / PUBLISH
+  // ══════════════════════════════════════════
+  function markUnsaved() {
+    const s = document.getElementById('write-status');
+    if (s) { s.textContent = 'Unsaved'; s.className = 'write-status'; }
+  }
+
+  function gatherEntry(status) {
+    const title = document.getElementById('write-title').value.trim();
+    const content = document.getElementById('write-content').value.trim();
+    const now = new Date();
+    return { title, content, status, tags: [...currentTags],
+      date: now.toLocaleDateString('en-US',{month:'long',year:'numeric'}),
+      dateRaw: now.getTime() };
+  }
+
+  function saveDraft() {
+    const data = gatherEntry('draft');
+    if (editingId) {
+      const idx = DB.entries.findIndex(e => e.id === editingId);
+      if (idx > -1) Object.assign(DB.entries[idx], data);
+    } else {
+      const id = 'entry-' + Date.now();
+      DB.entries.push({ id, logNum: null, ...data });
+      editingId = id;
+    }
+    const s = document.getElementById('write-status');
+    s.textContent = 'Draft saved'; s.className = 'write-status saved';
+    saveDB();
+  }
+
+  function showPublishModal() {
+    const title = document.getElementById('write-title').value.trim();
+    const content = document.getElementById('write-content').value.trim();
+    if (!title) {
+      document.getElementById('write-title').focus();
+      document.getElementById('write-title').style.outline = '1px solid var(--gold)';
+      setTimeout(() => document.getElementById('write-title').style.outline = 'none', 2000);
+      return;
+    }
+    if (!content) {
+      document.getElementById('write-content').focus();
+      return;
+    }
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'publish-modal';
+    const logNum = editingId
+      ? (DB.entries.find(e=>e.id===editingId)?.logNum || DB.nextLogNum)
+      : DB.nextLogNum;
+    modal.innerHTML = `
+      <div class="modal">
+        <div class="modal-glyph">✦</div>
+        <div class="modal-title">Ready to publish?</div>
+        <div class="modal-body">
+          This entry will be published as<br>
+          <strong style="color:var(--gold);font-family:var(--mono);font-size:13px;letter-spacing:0.1em;">
+            Builder Log ${String(logNum).padStart(3,'0')}
+          </strong><br><br>
+          Once published it will appear in your Builder Journal.
+        </div>
+        <div class="modal-actions">
+          <button class="btn-draft" onclick="closeModal()">Go Back</button>
+          <button class="btn-publish" onclick="publishEntry()">Publish Now →</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+
+  function closeModal() {
+    const m = document.getElementById('publish-modal');
+    if (m) m.remove();
+  }
+
+  function publishEntry() {
+    closeModal();
+    const data = gatherEntry('published');
+    if (editingId) {
+      const idx = DB.entries.findIndex(e => e.id === editingId);
+      if (idx > -1) {
+        if (!DB.entries[idx].logNum) {
+          DB.entries[idx].logNum = DB.nextLogNum;
+          DB.nextLogNum++;
+        }
+        Object.assign(DB.entries[idx], data);
+      }
+    } else {
+      const id = 'entry-' + Date.now();
+      DB.entries.push({ id, logNum: DB.nextLogNum, ...data });
+      DB.nextLogNum++;
+      editingId = id;
+    }
+    saveDB();
+    const s = document.getElementById('write-status');
+    s.textContent = 'Published'; s.className = 'write-status saved';
+
+    // Show confirmation then go to read view
+    setTimeout(() => {
+      readEntry(editingId);
+    }, 400);
+  }
+
+  // ══════════════════════════════════════════
+  // READ ENTRY
+  // ══════════════════════════════════════════
+  function readEntry(id) {
+    const e = DB.entries.find(e => e.id === id);
+    if (!e) return;
+    editingId = id;
+
+    const isDraft = e.status === 'draft';
+    const logLabel = isDraft ? 'Draft' : `Builder Log ${String(e.logNum).padStart(3,'0')}`;
+    const wordCount_n = wordCount(e.content);
+    const readMin = Math.max(1, Math.round(wordCount_n / 200));
+
+    document.getElementById('read-log').innerHTML =
+      `<span style="${isDraft?'color:var(--rule-bright)':''}">
+        ${logLabel}
+        ${isDraft ? '<span style="color:var(--gold-dim);font-size:10px;margin-left:8px;">● Draft — not published</span>' : ''}
+      </span>`;
+
+    document.getElementById('read-title').textContent = e.title || 'Untitled';
+    document.getElementById('read-meta').innerHTML =
+      `<span>${e.date}</span><span>${readMin} min read</span><span>${wordCount_n} words</span>`;
+
+    // Minimal markdown-to-HTML render
+    document.getElementById('read-body').innerHTML = renderMarkdown(e.content);
+
+    document.getElementById('read-tags').innerHTML =
+      e.tags.map(t => `<span class="read-tag">${escHtml(t)}</span>`).join('');
+
+    go('read');
+  }
+
+  // ══════════════════════════════════════════
+  // EDITOR HELPERS
+  // ══════════════════════════════════════════
+  function insertMd(before, after) {
+    const ta = document.getElementById('write-content');
+    const s = ta.selectionStart, e = ta.selectionEnd;
+    const selected = ta.value.slice(s, e);
+    ta.value = ta.value.slice(0,s) + before + selected + after + ta.value.slice(e);
+    ta.selectionStart = s + before.length;
+    ta.selectionEnd = e + before.length;
+    ta.focus(); updateWordCount(); markUnsaved();
+  }
+
+  function insertLine(prefix) {
+    const ta = document.getElementById('write-content');
+    const s = ta.selectionStart;
+    const lineStart = ta.value.lastIndexOf('\n', s-1) + 1;
+    ta.value = ta.value.slice(0,lineStart) + prefix + ta.value.slice(lineStart);
+    ta.selectionStart = ta.selectionEnd = s + prefix.length;
+    ta.focus(); updateWordCount(); markUnsaved();
+  }
+
+  function updateWordCount() {
+    const c = document.getElementById('write-content').value.trim();
+    const w = c ? c.split(/\s+/).length : 0;
+    document.getElementById('write-wc').textContent = w + ' word' + (w===1?'':'s');
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function wordCount(text) {
+    return text.trim() ? text.trim().split(/\s+/).length : 0;
+  }
+
+  function escHtml(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderMarkdown(text) {
+    // Very lightweight markdown render for the read view
+    return text
+      .split('\n')
+      .map(line => {
+        if (line.startsWith('### ')) return `<h3 style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--cream);margin:32px 0 12px;">${escHtml(line.slice(4))}</h3>`;
+        if (line.startsWith('## '))  return `<h2 style="font-family:var(--display);font-size:26px;font-weight:700;color:var(--cream);margin:40px 0 16px;">${escHtml(line.slice(3))}</h2>`;
+        if (line.startsWith('> '))   return `<blockquote style="border-left:2px solid var(--gold);padding:4px 20px;margin:24px 0;font-style:italic;color:var(--cream-dim);">${escHtml(line.slice(2))}</blockquote>`;
+        if (line.startsWith('• '))   return `<div style="display:flex;gap:12px;margin:6px 0;"><span style="color:var(--gold);flex-shrink:0;">•</span><span>${escHtml(line.slice(2))}</span></div>`;
+        if (line.startsWith('— '))   return `<div style="color:var(--cream-dim);font-style:italic;margin:8px 0;">${escHtml(line)}</div>`;
+        if (line === '')              return `<div style="height:1.5em;"></div>`;
+        // inline bold/italic
+        let l = escHtml(line);
+        l = l.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--cream);font-weight:600;">$1</strong>');
+        l = l.replace(/\*(.+?)\*/g, '<em style="color:var(--cream);">$1</em>');
+        return `<p style="margin:0;">${l}</p>`;
+      })
+      .join('');
+  }
+
+  // ══════════════════════════════════════════
+  // CHECKLIST
+  // ══════════════════════════════════════════
+  function toggleCheck(el) {
+    el.classList.toggle('done');
+    el.textContent = el.classList.contains('done') ? '✓' : '';
+    const txt = el.closest('.check-row').querySelector('.chk-t');
+    if (txt) txt.classList.toggle('done');
+  }
+
+  // ── ORIENTATION ──
+  const STAGES = [
+    { id:'welcome', lbl:'Stage 00 — Welcome', title:'You have\narrived.', body:'This is not an app. This is not a course. This is the beginning of a different version of yourself. What follows will take two to four hours. Do not rush it.', type:'continue', prog:5 },
+    { id:'why', lbl:'Stage 01 — The First Question', title:'Why are\nyou here?', body:'Not the polished answer. The true one. Write it as if no one is watching — because the only person who needs to read it honestly is you.', type:'textarea', ph:'Write freely. There is no wrong answer — only an honest one and a dishonest one.', prog:18 },
+    { id:'story', lbl:'Stage 02 — Your Story', title:'What brought\nyou here?', body:'What have you tried before? What stopped you? What would your life look like in five years if nothing changed?', type:'textarea', ph:"Your story — what you've tried, what stopped you, and what five more years of the same would look like.", prog:30 },
+    { id:'north', lbl:'Stage 03 — Your North Star', title:'Your singular\nobjective.', body:'Not a SMART goal. Not a career plan. The one thing that, if you achieved it, would make everything else feel worth it.', type:'textarea', ph:'My north star is...', prog:44 },
+    { id:'pillars', lbl:'Stage 04 — Your Two Primary Pillars', title:'Where will\nyou go deepest?', body:'Choose exactly two disciplines you are committed to developing at the highest level. These are your primary pillars. Everything else is secondary.', type:'pillars', prog:57 },
+    { id:'adv', lbl:'Stage 05 — Asymmetric Advantage', title:'What do\nyou already have?', body:'Your background, knowledge, network, and perspective are strategic. What do you have that most people starting this journey do not?', type:'textarea', ph:'My asymmetric advantage is...', prog:68 },
+    { id:'std', lbl:'Stage 06 — Your Standards', title:'What is\nnon-negotiable?', body:'Not aspirations. Standards. Things you will hold yourself to regardless of how you feel. Write at least three.', type:'textarea', ph:'My standards: I will... I will... I will...', prog:80 },
+    { id:'oath', lbl:"Stage 07 — The Builder's Oath", title:'Read this.\nThen accept it.', body:'This is the Builder\'s Oath. Read every line. Type "I accept" when you are ready.', type:'oath', prog:90 },
+    { id:'admit', type:'admission', prog:100 },
+  ];
+
+  let cur = 0, selPillars = [];
+
+  function initOrientation() {
+    cur = 0; selPillars = [];
+    renderStage(0);
+  }
+
+  function renderStage(i) {
+    const s = STAGES[i];
+    const prog = document.getElementById('o-prog');
+    if (prog) prog.style.width = s.prog + '%';
+    const el = document.getElementById('o-content');
+
+    if (s.type === 'admission') {
+      el.innerHTML = `<div class="o-wrap admission-wrap">
+        <span class="admission-glyph">✦</span>
+        <div class="admission-hl">Welcome to The Foundry.</div>
+        <div class="admission-body">Your Orientation is complete.<br>You have answered the questions most people spend a lifetime avoiding.<br><br>Field Manual I is now unlocked.<br>You are a Builder.</div>
+        <button class="btn-gold" onclick="go('academy')">Enter the Academy →</button>
+        <div class="admission-date">Admitted ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+      </div>`; return;
+    }
+
+    const titleHtml = s.title.replace(/\n/g,'<br>');
+
+    if (s.type === 'oath') {
+      el.innerHTML = `<div class="o-wrap o-enter">
+        <div class="o-lbl">${s.lbl}</div>
+        <div class="o-title" style="font-size:clamp(32px,5vw,54px);">${titleHtml}</div>
+        <div class="oath-block">
+          <div class="oath-line">"I will not wait for permission to build.</div>
+          <div class="oath-line">I will do the work when I don't feel like it.</div>
+          <div class="oath-line">I will hold myself to a higher standard than anyone else holds me to.</div>
+          <div class="oath-line">I will ship imperfect things and improve them.</div>
+          <div class="oath-line">I will be honest about what I know and what I don't.</div>
+          <div class="oath-line">I will treat my time as the most valuable resource I have.</div>
+          <div class="oath-line">I am a Builder."</div>
+        </div>
+        <input class="o-input" id="oath-in" placeholder='Type "I accept" to continue' />
+        <button class="o-btn" onclick="checkOath()">Accept the Oath</button>
+      </div>`; return;
+    }
+
+    if (s.type === 'pillars') {
+      const opts = ['Engineering','Product','Design','Communication','Business','Operations','Sales','Leadership'];
+      el.innerHTML = `<div class="o-wrap o-enter">
+        <div class="o-lbl">${s.lbl}</div>
+        <div class="o-title">${titleHtml}</div>
+        <p class="o-body">${s.body}</p>
+        <div class="pillars-grid">${opts.map(p=>`<button class="p-btn" onclick="pickPillar(this,'${p}')">${p}</button>`).join('')}</div>
+        <div id="p-count" style="font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);margin-bottom:24px;">Select 2 pillars</div>
+        <button class="o-btn" id="p-confirm" onclick="nextStage()" disabled>Confirm My Pillars</button>
+      </div>`; return;
+    }
+
+    if (s.type === 'textarea') {
+      el.innerHTML = `<div class="o-wrap o-enter">
+        <div class="o-lbl">${s.lbl}</div>
+        <div class="o-title">${titleHtml}</div>
+        <p class="o-body">${s.body}</p>
+        <textarea class="o-ta" placeholder="${s.ph}"></textarea>
+        <button class="o-btn" onclick="nextStage()">Continue →</button>
+        <button class="o-skip-btn" onclick="nextStage()">Skip for now</button>
+      </div>`; return;
+    }
+
+    // continue (welcome)
+    el.innerHTML = `<div class="o-wrap o-enter">
+      <div class="o-lbl">${s.lbl}</div>
+      <div class="o-title">${titleHtml}</div>
+      <p class="o-body">${s.body}</p>
+      <button class="o-btn" onclick="nextStage()">Enter →</button>
+    </div>`;
+  }
+
+  function nextStage() { cur++; if (cur < STAGES.length) renderStage(cur); }
+
+  function pickPillar(btn, name) {
+    if (btn.classList.contains('sel')) {
+      btn.classList.remove('sel'); selPillars = selPillars.filter(p=>p!==name);
+    } else {
+      if (selPillars.length >= 2) return;
+      btn.classList.add('sel'); selPillars.push(name);
+    }
+    const c = document.getElementById('p-count');
+    const cf = document.getElementById('p-confirm');
+    if (selPillars.length === 2) {
+      c.textContent = `Selected: ${selPillars.join(' & ')}`;
+      c.style.color = 'var(--gold)';
+      cf.disabled = false;
+    } else {
+      c.textContent = `Select ${2-selPillars.length} more`;
+      c.style.color = 'var(--gold-dim)';
+      cf.disabled = true;
+    }
+  }
+
+  function checkOath() {
+    const v = document.getElementById('oath-in').value.toLowerCase().trim();
+    if (v === 'i accept') { nextStage(); return; }
+    const inp = document.getElementById('oath-in');
+    inp.style.borderColor = '#8B3A2A';
+    inp.placeholder = 'Type exactly: I accept';
+    inp.value = '';
+    setTimeout(()=>{ inp.style.borderColor='var(--rule-bright)'; inp.placeholder='Type "I accept" to continue'; }, 2000);
+  }
+</script>
+</body>
+</html>
